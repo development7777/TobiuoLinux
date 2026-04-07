@@ -59,7 +59,7 @@ actions:
     script: scripts/customize.sh
 
   - action: image-partition
-    imagename: {{ $os_name }}.img
+    imagename: out/{{ $os_name }}.img
     imagesize: "10GB"
     partitiontype: msdos
     mountpoints:
@@ -73,5 +73,5 @@ actions:
         flags: [ boot ]
 
   - action: compress
-    file: {{ $os_name }}.img
+    file: out/{{ $os_name }}.img
     compression: gzip

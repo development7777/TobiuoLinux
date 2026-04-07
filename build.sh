@@ -2,23 +2,21 @@
 
 # Tobiuo Linux Build Script
 
-echo """
-████████╗ ██████╗ ██████╗ ██╗██╗   ██╗ ██████╗
+echo "
+████████╗ ██████╗ ██████╗ ██╗██╗   ██╗ ██████╗ 
 ╚══██╔══╝██╔═══██╗██╔══██╗██║██║   ██║██╔═══██╗
    ██║   ██║   ██║██████╔╝██║██║   ██║██║   ██║
    ██║   ██║   ██║██╔══██╗██║██║   ██║██║   ██║
    ██║   ╚██████╔╝██████╔╝██║╚██████╔╝╚██████╔╝
-   ╚═╝    ╚═════╝ ╚═════╝ ╚═╝ ╚═════╝  ╚═════╝
-
-██╗     ██╗███╗   ██╗██╗   ██╗██╗  ██╗
-██║     ██║████╗  ██║██║   ██║╚██╗██╔╝
-██║     ██║██╔██╗ ██║██║   ██║ ╚███╔╝
-██║     ██║██║╚██╗██║██║   ██║ ██╔██╗
-███████╗██║██║ ╚████║╚██████╔╝██╔╝ ██╗
-╚══════╝╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝
-"""
-
-echo "Tobiuo Linux Build Script"
+   ╚═╝    ╚═════╝ ╚═════╝ ╚═╝ ╚═════╝  ╚═════╝ 
+                                               
+    ██╗      ██╗███╗   ██╗██╗   ██╗██╗  ██╗    
+    ██║      ██║████╗  ██║██║   ██║╚██╗██╔╝    
+    ██║      ██║██╔██╗ ██║██║   ██║ ╚███╔╝     
+    ██║      ██║██║╚██╗██║██║   ██║ ██╔██╗     
+    ███████╗ ██║██║ ╚████║╚██████╔╝██╔╝ ██╗    
+    ╚══════╝ ╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝     
+"
 
 set -e
 
@@ -31,9 +29,13 @@ if [ ! -e /dev/kvm ]; then
     exit 1
 fi
 
+# Ensure output directory exists before running Docker
+mkdir -p out
+
 echo "--- Building $RECIPE started at $(date +'%H:%M:%S') ---"
 
 # Execute debos via Docker
+# Note: We keep the mount to $(pwd) so debos can access 'recipe.yaml' and write to 'out/'
 time docker run --rm -it \
     --device /dev/kvm \
     --user $(id -u) \
@@ -43,4 +45,4 @@ time docker run --rm -it \
     --security-opt label=disable \
     godebos/debos "$RECIPE"
 
-echo "--- Build Finished! ---"
+echo "--- Build Finished! Output is in the 'out/' directory. ---"
