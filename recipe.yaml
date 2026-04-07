@@ -1,0 +1,77 @@
+
+# ████████╗ ██████╗ ██████╗ ██╗██╗   ██╗ ██████╗
+# ╚══██╔══╝██╔═══██╗██╔══██╗██║██║   ██║██╔═══██╗
+#    ██║   ██║   ██║██████╔╝██║██║   ██║██║   ██║
+#    ██║   ██║   ██║██╔══██╗██║██║   ██║██║   ██║
+#    ██║   ╚██████╔╝██████╔╝██║╚██████╔╝╚██████╔╝
+#    ╚═╝    ╚═════╝ ╚═════╝ ╚═╝ ╚═════╝  ╚═════╝
+# 
+#     ██╗     ██╗███╗   ██╗██╗   ██╗██╗  ██╗
+#     ██║     ██║████╗  ██║██║   ██║╚██╗██╔╝
+#     ██║     ██║██╔██╗ ██║██║   ██║ ╚███╔╝
+#     ██║     ██║██║╚██╗██║██║   ██║ ██╔██╗
+#     ███████╗██║██║ ╚████║╚██████╔╝██╔╝ ██╗
+#     ╚══════╝╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝
+
+# Debos recipe file
+
+# Variables
+{{- $architecture := "amd64" -}}
+{{- $suite := "trixie" -}}
+{{- $os_name := "tobiuo-linux" -}}
+
+architecture: {{ $architecture }}
+
+actions:
+  - action: debootstrap
+    suite: {{ $suite }}
+    architecture: {{ $architecture }}
+    mirror: http://deb.debian.org/debian
+    components: [main, contrib, non-free, non-free-firmware]
+
+  - action: apt
+    description: Install core packages
+    packages:
+      # System Management
+      - sudo
+      - network-manager
+      - curl
+      - gnupg
+      # KDE Plasma Desktop (Minimal version to keep it lightweight)
+      - sddm
+      - kde-plasma-desktop
+      - plasma-nm
+      # Installer Framework
+      - calamares
+      - calamares-settings-debian
+      - kpmcore
+      # Drivers and Firmware (Essential for Trixie)
+      - firmware-linux
+      - firmware-misc-nonfree
+
+  - action: overlay
+    description: Apply user skeleton (skel) and branding
+    source: overlays
+
+  - action: run
+    description: Execute post-install customization
+    chroot: true
+    script: scripts/customize.sh
+
+  - action: image-partition
+    imagename: {{ $os_name }}.img
+    imagesize: "10GB"
+    partitiontype: msdos
+    mountpoints:
+      - mountpoint: /
+        partition: root
+    partitions:
+      - name: root
+        fs: ext4
+        start: 0%
+        end: 100%
+        flags: [ boot ]
+
+  - action: compress
+    file: {{ $os_name }}.img
+    compression: gzip
