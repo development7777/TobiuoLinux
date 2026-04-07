@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# Tobiuo Linux Build Script
+
+echo """
+████████╗ ██████╗ ██████╗ ██╗██╗   ██╗ ██████╗
+╚══██╔══╝██╔═══██╗██╔══██╗██║██║   ██║██╔═══██╗
+   ██║   ██║   ██║██████╔╝██║██║   ██║██║   ██║
+   ██║   ██║   ██║██╔══██╗██║██║   ██║██║   ██║
+   ██║   ╚██████╔╝██████╔╝██║╚██████╔╝╚██████╔╝
+   ╚═╝    ╚═════╝ ╚═════╝ ╚═╝ ╚═════╝  ╚═════╝
+
+██╗     ██╗███╗   ██╗██╗   ██╗██╗  ██╗
+██║     ██║████╗  ██║██║   ██║╚██╗██╔╝
+██║     ██║██╔██╗ ██║██║   ██║ ╚███╔╝
+██║     ██║██║╚██╗██║██║   ██║ ██╔██╗
+███████╗██║██║ ╚████║╚██████╔╝██╔╝ ██╗
+╚══════╝╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝
+"""
+
+echo "Tobiuo Linux Build Script"
+
+set -e
+
+# Default recipe name
+export RECIPE=${1:-"recipe.yaml"}
+
+# Check for KVM device
+if [ ! -e /dev/kvm ]; then
+    echo "Error: /dev/kvm not found. Please enable hardware virtualization."
+    exit 1
+fi
+
+echo "--- Building $RECIPE started at $(date +'%H:%M:%S') ---"
+
+# Execute debos via Docker
+time docker run --rm -it \
+    --device /dev/kvm \
+    --user $(id -u) \
+    --group-add "$(stat -c '%g' /dev/kvm)" \
+    --workdir /recipes \
+    --mount "type=bind,source=$(pwd),destination=/recipes" \
+    --security-opt label=disable \
+    godebos/debos "$RECIPE"
+
+echo "--- Build Finished! ---"
