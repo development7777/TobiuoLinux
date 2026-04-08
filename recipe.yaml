@@ -67,5 +67,19 @@ actions:
         start: 0%
         end: 100%
         flags: [ boot ]
-    # Correct way to compress the image
-    compression: gz
+
+  - action: filesystem-deploy
+    description: Deploying filesystem onto the image
+    setup-fstab: true
+    setup-kernel-cmdline: true
+
+  - action: apt
+    description: Install kernel
+    packages:
+      - linux-image-amd64
+      - grub-pc
+
+  - action: grub
+    description: Install GRUB
+    root: root
+    device: {{ $os_name }}.img
