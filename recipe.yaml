@@ -40,7 +40,7 @@ actions:
       - plasma-nm
       - calamares
       - calamares-settings-debian
-      - kpmcore
+      - libkpmcore12 
       - firmware-linux
       - firmware-misc-nonfree
 
