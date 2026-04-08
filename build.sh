@@ -36,13 +36,6 @@ echo "--- Building $RECIPE started at $(date +'%H:%M:%S') ---"
 
 # Execute debos via Docker
 # Note: We keep the mount to $(pwd) so debos can access 'recipe.yaml' and write to 'out/'
-time docker run --rm -it \
-    --device /dev/kvm \
-    --user $(id -u) \
-    --group-add "$(stat -c '%g' /dev/kvm)" \
-    --workdir /recipes \
-    --mount "type=bind,source=$(pwd),destination=/recipes" \
-    --security-opt label=disable \
-    godebos/debos "$RECIPE"
+time debos $RECIPE
 
 echo "--- Build Finished! Output is in the 'out/' directory. ---"
