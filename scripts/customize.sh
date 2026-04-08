@@ -12,8 +12,6 @@ apt-get update
 
 # Brave Browser Installation
 echo "--- Installing Brave Browser ---"
-# Use apt-get -y for automatic "Yes" to prompts
-apt-get install -y curl gnupg
 
 # Fetch GPG key
 curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg

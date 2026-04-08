@@ -33,6 +33,7 @@ actions:
     packages:
       - sudo
       - network-manager
+      - ca-certificates
       - curl
       - gnupg
       - sddm
