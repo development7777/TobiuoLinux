@@ -13,13 +13,12 @@
 #     ███████╗██║██║ ╚████║╚██████╔╝██╔╝ ██╗
 #     ╚══════╝╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝
 
-# Debos recipe file
-
-# Variables
+# Tobiuo Linux Debos Recipe File
 {{- $architecture := "amd64" -}}
 {{- $suite := "trixie" -}}
 {{- $os_name := "tobiuo-linux" -}}
 
+# The 'architecture' property MUST be at the top level
 architecture: {{ $architecture }}
 
 actions:
@@ -32,20 +31,16 @@ actions:
   - action: apt
     description: Install core packages
     packages:
-      # System Management
       - sudo
       - network-manager
       - curl
       - gnupg
-      # KDE Plasma Desktop (Minimal version to keep it lightweight)
       - sddm
       - kde-plasma-desktop
       - plasma-nm
-      # Installer Framework
       - calamares
       - calamares-settings-debian
       - kpmcore
-      # Drivers and Firmware (Essential for Trixie)
       - firmware-linux
       - firmware-misc-nonfree
 
@@ -71,7 +66,5 @@ actions:
         start: 0%
         end: 100%
         flags: [ boot ]
-
-  - action: compress
-    file: out/{{ $os_name }}.img
-    compression: gzip
+    # Correct way to compress the image
+    compression: gz
